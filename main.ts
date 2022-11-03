@@ -1,12 +1,11 @@
-import { Application, Router, Status, RouterContext, Context } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-import { config, DotenvConfig } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
+import "https://deno.land/std@0.161.0/dotenv/load.ts";
+import { Application, Router, Status, RouterContext } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import adjectives from "./adjectives.ts";
 import { SupabaseClient } from "./supabase.ts";
 
-const CONFIG: DotenvConfig = config();
 const app = new Application();
 const router = new Router();
-const supabase = new SupabaseClient(CONFIG["SUPABASE_API_URL"], CONFIG["SUPABASE_API_KEY"]);
+const supabase = new SupabaseClient(Deno.env.get("SUPABASE_API_URL")!, Deno.env.get("SUPABASE_API_KEY")!);
 
 interface ShortenRequest {
   url: string;
@@ -42,7 +41,7 @@ router.post("/shorten", async (context: RouterContext<"/shorten">) => {
       console.log(alreadyExists);
       return context.throw(Status.Conflict, JSON.stringify({
         status: "error",
-        message: `${CONFIG["BASE_URL"]}/${shortenReq.suffix} already exists`
+        message: `${Deno.env.get("BASE_URL")}/${shortenReq.suffix} already exists`
       }));
     }
 
@@ -52,7 +51,7 @@ router.post("/shorten", async (context: RouterContext<"/shorten">) => {
     context.response.status = Status.Created;
     context.response.body = {
       status: "ok",
-      url: `${CONFIG["BASE_URL"]}/${shortenReq.suffix}`,
+      url: `${Deno.env.get("BASE_URL")}/${shortenReq.suffix}`,
     };
     context.response.type = "json";
     return;
