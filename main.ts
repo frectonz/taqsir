@@ -1,4 +1,4 @@
-import { Application, Router, Status, RouterContext } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+import { Application, Router, Status, RouterContext, Context } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { config, DotenvConfig } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
 import adjectives from "./adjectives.ts";
 import { SupabaseClient } from "./supabase.ts";
@@ -60,6 +60,10 @@ router.post("/shorten", async (context: RouterContext<"/shorten">) => {
 
   context.throw(Status.BadRequest, "Bad Request");
 });
+
+router.get("/", (ctx: RouterContext<"/">) => {
+  ctx.response.redirect("https://github.com/frectonz/taqsir")
+})
 
 router.get("/:suffix", async (context: RouterContext<"/:suffix">) => {
   const { suffix } = context.params;
