@@ -1,5 +1,7 @@
 import "https://deno.land/std@0.161.0/dotenv/load.ts";
+import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 import { Application, Router, Status, RouterContext } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+
 import adjectives from "./adjectives.ts";
 import { SupabaseClient } from "./supabase.ts";
 
@@ -74,6 +76,7 @@ router.get("/:suffix", async (context: RouterContext<"/:suffix">) => {
   context.throw(Status.NotFound, "Not Found");
 });
 
+app.use(oakCors());
 app.use(router.routes());
 
 console.log(`Listening on port 8000`);
